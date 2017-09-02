@@ -74,29 +74,29 @@ public final class BleWrapper implements Handler.Callback {
   }
 
   public void disconnect() {
-    bleHandler.sendEmptyMessage(MSG_DISCONNECT);
+    bleHandler.obtainMessage(MSG_DISCONNECT, bluetoothDevice).sendToTarget();
   }
 
   @Override
-  public boolean handleMessage(Message message) {
-    switch (message.what) {
-      case MSG_CONNECT:
-        doConnect((Boolean) message.obj);
-        break;
-      case MSG_CONNECTED:
-        ((BluetoothGatt) message.obj).discoverServices();
-        break;
-      case MSG_DISCONNECT:
-        ((BluetoothGatt) message.obj).disconnect();
-        break;
-      case MSG_DISCONNECTED:
-        ((BluetoothGatt) message.obj).close();
-        break;
-      case MSG_SERVICES_DISCOVERED:
-        doNotifyReady();
-    }
-    return true;
+public boolean handleMessage(Message message) {
+  switch (message.what) {
+    case MSG_CONNECT:
+      doConnect((Boolean) message.obj);
+      break;
+    case MSG_CONNECTED:
+      ((BluetoothGatt) message.obj).discoverServices();
+      break;
+    case MSG_DISCONNECT:
+      ((BluetoothGatt) message.obj).disconnect();
+      break;
+    case MSG_DISCONNECTED:
+      ((BluetoothGatt) message.obj).close();
+      break;
+    case MSG_SERVICES_DISCOVERED:
+      doNotifyReady();
   }
+  return true;
+}
 
   @MainThread
   private void doNotifyReady() {
